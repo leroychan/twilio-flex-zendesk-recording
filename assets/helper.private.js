@@ -1,5 +1,34 @@
 // Load Libraries
 const request = require("request-promise-native");
+const crypto = require("crypto");
+
+/*
+ * Validate Zendesk Webhook Signature
+ */
+const validateZendeskSignature = async (
+  signature,
+  timestamp,
+  body,
+  zendeskWebhookSecret
+) => {
+  try {
+    // Generate HMAC-256 Digest
+    const digest = crypto
+      .createHmac("sha256", zendeskWebhookSecret)
+      .update(timestamp + body)
+      .digest("base64");
+    console.log("--debug--digest");
+    console.log(digest);
+    if (digest === signature) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
 
 /*
  * Wrapped Function - Twilio - Get Call Recording
@@ -67,6 +96,7 @@ const zendeskUpdateTicketVoiceComment = async (auth, ticketId, payload) => {
 };
 
 module.exports = {
+  validateZendeskSignature,
   twilioGetCallResource,
   twilioGetCallRecording,
   zendeskGetTicketComments,

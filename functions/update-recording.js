@@ -10,6 +10,26 @@ exports.handler = async (context, event, callback) => {
     console.log(JSON.stringify(event));
     console.log("---End of Raw Event---");
 
+    // Optional: Verify Zendesk's Webhook Signature
+    /* const zendeskSignature =
+      event.request.headers["x-zendesk-webhook-signature"];
+    const zendeskSignatureTimestamp =
+      event.request.headers["x-zendesk-webhook-signature-timestamp"];
+    const { request, ...zendeskPayload } = event;
+    let rawEvent;
+    if (Object.keys(zendeskPayload).length === 0) {
+      rawEvent = "";
+    } else {
+      rawEvent = JSON.stringify(zendeskPayload);
+    }
+   
+    const validateSignatureResult = .......
+    
+    if (!validateSignatureResult) {
+      return callback("Signature Validation Failed");
+    }
+    */
+
     // Step 1: Formulate Zendesk Auth
     const auth = {
       subdomain: process.env.ZENDESK_SUBDOMAIN,
